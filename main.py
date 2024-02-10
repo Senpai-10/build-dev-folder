@@ -76,6 +76,7 @@ def get_token():
     "-s",
     "--skip",
     type=str,
+    show_default=True,
     default="awesome-config,nvim-config",
     required=False,
 )
