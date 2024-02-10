@@ -77,7 +77,7 @@ def get_token():
     "--skip",
     type=str,
     show_default=True,
-    default="awesome-config,nvim-config",
+    default="awesome-config,nvim-config,dotfiles",
     required=False,
 )
 def build(username: str, destination: str, skip: str):
