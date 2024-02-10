@@ -4,6 +4,8 @@ import click
 import requests
 import os
 from math import floor, log
+from click import style as cs
+from click import echo as ce
 
 
 @click.group()
@@ -97,14 +99,16 @@ def build(username: str, destination: str, skip: str):
     incomplete_results = data["incomplete_results"]
     items = data["items"]
 
-    click.echo("-----------------------------------")
-    click.echo(f"Username: {username}")
-    click.echo(f"Destination: {destination}")
-    click.echo(f"Skip list: {skip_list}")
-    click.echo(f"Total count: {total_count}")
-    click.echo(f"Items: {len(items)}")
-    click.echo(f"Incomplete results: {incomplete_results}")
-    click.echo("-----------------------------------\n")
+    click.secho("-----------------------------------", fg="black")
+    ce(f"{cs('Username', bold=True)}: {cs(username, fg='bright_yellow')}")
+    ce(f"{cs('Destination', bold=True)}: {cs(destination, fg='bright_yellow')}")
+    ce(f"{cs('Skip list', bold=True)}: {cs(skip_list, fg='bright_yellow')}")
+    ce(f"{cs('Total count', bold=True)}: {cs(total_count, fg='bright_yellow')}")
+    ce(f"{cs('Items', bold=True)}: {cs(len(items), fg='bright_yellow')}")
+    ce(
+        f"{cs('Incomplete results', bold=True)}: {cs(incomplete_results, fg='bright_yellow')}"
+    )
+    click.secho("-----------------------------------\n", fg="black")
 
     click.confirm("Do you want to continue?", abort=True)
 
@@ -128,15 +132,36 @@ def build(username: str, destination: str, skip: str):
         if repo.name in skip_list:
             continue
 
-        print(f"{repo.name} ({repo.default_branch}) [{index + 1}/{len(items)}]")
-        print(f"Description: {repo.description}")
-        print(f"Destination: {os.getcwd()}/{dest}")
-        print(f"Language: {repo.language}")
-        print(f"Size: {format_bytes(repo.size)}")
-        print(f"Fork?: {repo.fork}")
-        print(f"Private?: {repo.private}")
+        ce(
+            "{} ({}) [{}/{}]".format(
+                cs(repo.name, fg="bright_yellow"),
+                cs(repo.default_branch, fg="bright_magenta"),
+                cs(index + 1, fg="bright_yellow"),
+                cs(len(items), fg="bright_yellow"),
+            )
+        )
+        ce(
+            "{}: {}".format(
+                cs("Description", bold=True), cs(repo.description, fg="bright_yellow")
+            )
+        )
+        ce(
+            "{}: {}".format(
+                cs("Language", bold=True), cs(repo.language, fg="bright_yellow")
+            )
+        )
+        ce(
+            "{}: {}".format(
+                cs("Size", bold=True), cs(format_bytes(repo.size), fg="bright_yellow")
+            )
+        )
+        ce("{}: {}".format(cs("Fork?", bold=True), cs(repo.fork, fg="bright_yellow")))
+        ce("{}: {}".format(cs("Private?", bold=True), cs(repo.private, fg="bright_yellow")))
+        ce("--------------- Cloning Repo ---------------")
         os.system(f"git clone {repo.html_url} {dest}")
-        print("-" * 15, "\n")
+        click.secho("-----------------------------------\n", fg="black")
+
+        exit(0)
 
 
 if __name__ == "__main__":
