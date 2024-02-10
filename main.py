@@ -84,7 +84,7 @@ def cli():
     required=False,
 )
 def build(username: str, destination: str, skip: str):
-    username = username or input("Username: ")
+    username = username or click.prompt("Username: ")
     skip_list = skip.split(",")
 
     token = get_token()
@@ -108,10 +108,7 @@ def build(username: str, destination: str, skip: str):
     click.echo(f"Incomplete results: {incomplete_results}")
     click.echo("-----------------------------------\n")
 
-    continue_confirm = input("Do you want to continue? (Y/n): ") or "y"
-
-    if continue_confirm.lower() != "y":
-        exit(0)
+    click.confirm('Do you want to continue?', abort=True)
 
     if os.path.exists(destination):
         print(f"Directory '{destination}' already exists!")
